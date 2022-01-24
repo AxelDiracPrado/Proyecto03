@@ -23,6 +23,17 @@ public class CifradoShamir {
 	    return archivo;
 	}
 
+	public String archivoTexto() {
+		String archivo;
+		if(this.nombreArchivoTexto.lastIndexOf('.') == -1){
+			archivo = this.nombreArchivoTexto + ".txt";
+		}
+	    else {
+	    	archivo = this.nombreArchivoTexto.substring(0,this.nombreArchivoTexto.lastIndexOf('.'))+".txt";
+	    }
+	    return archivo;
+	}
+
 	public void cifradoAES(BigInteger llave) {
 		byte[] k = llave.toByteArray();
 		String archivo = this.archivoAES();
@@ -53,6 +64,39 @@ public class CifradoShamir {
 		PolinomioShamir polinomio = new PolinomioShamir(t-1,k);
 		polinomio.archivoEvaluaciones(n,this.nombreArchivoEvals);
 		this.cifradoAES(k);
+	}
+
+	public void decifradoAES(BigInteger llave) {
+		byte[] k = llave.toByteArray();
+		String archivo = this.archivoTexto();
+		try {
+			Cipher cipher = Cipher.getInstance("AES");
+			FileOutputStream textoDecifrado = new FileOutputStream(archivo,true);
+			SecretKeySpec kSec = new SecretKeySpec(k,"AES");
+			cipher.init(Cipher.DECRYPT_MODE,kSec);
+			CipherInputStream cipherInput = new CipherInputStream(new FileInputStream(this.nombreArchivoTexto),cipher);
+			int escribir = cipherInput.read();
+			while(escribir != -1) {
+				textoDecifrado.write(escribir);
+				escribir = cipherInput.read();
+			}
+			textoDecifrado.close();
+			cipherInput.close();
+			System.out.println("El texto decifrado es guardo como: " + archivo);
+		} catch(Exception e) {
+			System.err.println(e);
+	    	System.exit(1);
+		}
+	}
+
+	public void decifrarTexto() {
+		BigInteger k = new BigInteger(LlaveCifrado.getLlave(this.nombreArchivoEvals));
+		this.decifradoAES(k);
+	}
+
+	public static void main(String[] args) {
+		CifradoShamir c = new CifradoShamir("evals", "claro.txt");
+		c.cifrarTexto();
 	}
 
 }
