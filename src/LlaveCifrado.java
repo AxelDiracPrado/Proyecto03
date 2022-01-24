@@ -39,42 +39,52 @@ public class LlaveCifrado {
 		return hashContraseña;
 	}
 
-	public byte[] getK(String archivoE) {
+	public static Vector[] vectorEvaluaciones(String archivoE) {
 		Vector[] array = null;
-		byte[] array1 = null;
-		LinkedList<Vector> list = new LinkedList<Vector>();
+		LinkedList<Vector> lista = new LinkedList<Vector>();
        	try {
-            String strLine;
-            FileInputStream fstream = new FileInputStream(archivoE);
-            DataInputStream in = new DataInputStream(fstream);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-	    System.out.println("Reading "+evalDecrypt+"...");
-            while((strLine=br.readLine()) != null) {
-		list.add(new Vector(2));
-		((Vector)list.getLast()).add(0,new BigInteger(strLine.substring(0,strLine.indexOf(','))));
-		((Vector)list.getLast()).add(1,new BigInteger(strLine.substring(strLine.indexOf(',')+1,strLine.length())));
+            String parEvals;
+            FileReader filer = new FileReader(archivoE);
+            BufferedReader br = new BufferedReader(filer);
+            while((parEvals=br.readLine()) != null) {
+            	Vector punto = new Vector(2);
+            	String[] valuacion = parEvals.split(",");
+            	punto.add(0,new BigInteger(valuacion[0]));
+            	punto.add(1,new BigInteger(valuacion[1]));
+				lista.add(punto);
             }
-	    in.close();
-	    array = new Vector[list.size()];
-	    for(int i = 0; i < array.length; i++)
-		array[i] = (Vector)list.get(i);
-	    System.out.println("Evaluating Lagrange interpolating polynomial...");
-	    return zp.lagrange(new BigInteger("0"),array).toByteArray();
+	    	br.close();
+	    	array = listaAVectorArray(lista);
+	    	return array;
         } catch (Exception e) {
             System.err.println(e);
             System.exit(1);
-	}
-	return null;
+		}
+		return null;
+    }
+
+    public static Vector[] listaAVectorArray(LinkedList<Vector> lista) {
+    	Vector[] array = new Vector[lista.size()];
+    	for(int i = 0; i < array.length; i++){
+			array[i] = (Vector)lista.get(i);
+		}
+		return array;
+    }
+
+    public static byte[] getLlave(String archivoE) {
+    	Vector[] array = vectorEvaluaciones(archivoE);
+    	return Lagrange.lagrangeInterpolacion(new BigInteger("0"),array).toByteArray();
     }
 
 	public static void main(String[] args) {
 		char[] contraseña = LlaveCifrado.obtenerContraseña(); 
 		BigInteger k = new BigInteger(LlaveCifrado.hashContraseña(contraseña));
 		System.out.println(k.mod(primo));
-		Vector[] evaluaciones = PolinomioShamir.evaluacionesPolinomio(k,3,5);
-		PolinomioShamir.archivoEvaluaciones(evaluaciones, "evals");
+		PolinomioShamir poli = new PolinomioShamir(2,k);
+		poli.archivoEvaluaciones(5,"evals");
 		
-		k = getLlave("evals.frg");
+		k = new BigInteger(getLlave("evals.frg"));
+		System.out.println(k.mod(primo));
 		
 	}
 

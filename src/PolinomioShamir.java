@@ -5,25 +5,27 @@ import java.io.*;
 
 
 public class PolinomioShamir {
-	
-	private static BigInteger primo = new BigInteger("208351617316091241234326746312124448251235562226470491514186331217050270460481");
+	private BigInteger[] coeficientes;
+	private int grado;
+	private BigInteger primo = new BigInteger("208351617316091241234326746312124448251235562226470491514186331217050270460481");
 
 	/**
-	 * Método  que genera el polinomio donde se escondera la llave de cifrado.
+	 * Método constructor que genera el polinomio donde se escondera la llave de cifrado.
 	 * @param grado grado del polinomio.
 	 * @param llave de cifrado.
 	 */
-	public static BigInteger[] construirPolinomio(int t, BigInteger llave) {
-		BigInteger[] coeficientes = new BigInteger[t];
-		coeficientes[0] = llave;
-		for(int i = 1; i < coeficientes.length; i++) {
+	public PolinomioShamir(int grado, BigInteger llave) {
+		BigInteger k = llave.mod(primo);
+		this.coeficientes = new BigInteger[grado + 1];
+		this.grado = grado;
+		this.coeficientes[0] = k;
+		for(int i = 1; i <= grado; i++) {
 			BigInteger coeficient = new BigInteger(primo.bitLength(),new Random());
 			while(coeficient.compareTo(primo) >= 0 || coeficient.compareTo(BigInteger.ZERO)==0) {
 				coeficient = new BigInteger(primo.bitLength(),new Random());
 			}
-			coeficientes[i] = coeficient;
+			this.coeficientes[i] = coeficient;
 		}
-		return coeficientes;
 	}
 
 	/**
@@ -31,48 +33,48 @@ public class PolinomioShamir {
 	 * @param x BigInteger que será evaluado en el polinomio.
 	 * @return evaluación del valor en el polinomio.
 	 */
-	public static BigInteger evaluarValor(BigInteger x, BigInteger[] polinomio) {
+	public BigInteger evaluarValor(BigInteger x) {
 		BigInteger value = new BigInteger("0");
-		for(int i = 0; i < polinomio.length; i++) {
-			BigInteger coef = polinomio[i];
+		for(int i = 0; i <= this.grado; i++) {
+			BigInteger coef = this.coeficientes[i];
 			value = value.add(coef.multiply(x.modPow(BigInteger.valueOf((long) i), primo)).mod(primo)).mod(primo);
 		}
 		return value;
 	}
 
-	
+	/**
+	 * Método que obtiene la apreja (x,P(x)) en forma de cadena.
+	 * @param x valor a evaluar en el polinomio.
+	 * @return pareja x,P(x)
+	 */
+	public String parajeEvaluacion(BigInteger x) {
+		return x.toString() + "," + evaluarValor(x).toString() + "\n";
+	}
 
 	/**
-	 * Método que obtiene una lista de n evaluaciones.
+	 * Método que obtiene una lista en forma de cadena de n evaluaciones
+	 * del polinómio.
 	 * @param n número de evaluaciones
 	 * @return lista de n parejas con el valor a evaluar y su evaluación.
 	 */
-	public static Vector[] evaluarNValores(int n, BigInteger[] polinomio) {
-		Vector[] evaluaciones = new Vector[n];
+	public String evaluarNValores(int n) {
+		String lista = "";
 		for(int i = 0; i < n; i++) {
 			BigInteger x = new BigInteger(primo.bitLength(),new Random()); 
 			while(x.compareTo(primo) >= 0 || x.compareTo(BigInteger.ZERO)==0) {
 				x = new BigInteger(primo.bitLength(),new Random());
 			}
-			evaluaciones[i] = new Vector(2);
-			evaluaciones[i].add(0,x);
-			BigInteger val = evaluarValor(x, polinomio);
-			evaluaciones[i].add(1,val);
+			lista += parajeEvaluacion(x);
 		}
-		return evaluaciones;
+		return lista;
 	}
 
-	public static Vector[] evaluacionesPolinomio(BigInteger k, int t, int n){
-		return evaluarNValores(n, construirPolinomio(t,k.mod(primo)));
-	}
-
-	public static void archivoEvaluaciones(Vector[] evaluaciones, String archivoE) {
+	public void archivoEvaluaciones(int n, String archivoE) {
+		String evaluaciones = this.evaluarNValores(n);
 		Writer wr;
 		try {
 			wr = new FileWriter(archivoE + ".frg", false);
-			for(int i = 0; i < evaluaciones.length; i++){
-				wr.write(evaluaciones[i].elementAt(0).toString()+","+evaluaciones[i].elementAt(1).toString()+"\n");
-			}
+			wr.write(evaluaciones);
 			wr.close();
 			System.out.println("Las evaluaciones se guardaron en: " + archivoE + ".frg");
 		} catch(Exception e) {
