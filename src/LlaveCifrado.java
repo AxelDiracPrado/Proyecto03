@@ -4,14 +4,21 @@ import java.util.*;
 import java.math.BigInteger;
 
 
-
+/**
+ * Clase que permite manejar el password dado por el usuario y la llave de cifrado 
+ * para el cifrado AES.
+ */
 public class LlaveCifrado {
-		private static BigInteger primo = new BigInteger("208351617316091241234326746312124448251235562226470491514186331217050270460481");
+	/**
+	 * El número primo más pequeño que se puede expresar como 
+	 * la suma de las primeras once potencias primas de un número más uno.
+	 */
+	private static BigInteger primo = new BigInteger("208351617316091241234326746312124448251235562226470491514186331217050270460481");
 
 
 	/**
 	 * Método que pide el password al usuario.
-	 * @return cadena con el password.
+	 * @return arreglo de caracteres del password.
 	 */
 	public static char[] obtenerContraseña() {
 		Console console = System.console();
@@ -39,6 +46,12 @@ public class LlaveCifrado {
 		return hashContraseña;
 	}
 
+	/**
+	 * Método que recupera las evaluaciones de una archivo con parejas (x,P(X)).
+	 * Obtiene un arreglo de vectores del tipo {x,P(x)}
+	 * @param archivoE cadena que representa el nombre del archivo donde estan las evaluaciones.
+	 * @return arreglo con todas las parejas x,P(x)
+	 */
 	public static Vector[] vectorEvaluaciones(String archivoE) {
 		Vector[] array = null;
 		LinkedList<Vector> lista = new LinkedList<Vector>();
@@ -63,6 +76,11 @@ public class LlaveCifrado {
 		return null;
     }
 
+    /**
+     * Método que tranforma una lista ligada de vectores en un arreglo de vectores.
+     * @param lista lista ligada de vectores.
+     * @return arreglo de vectores.
+     */
     public static Vector[] listaAVectorArray(LinkedList<Vector> lista) {
     	Vector[] array = new Vector[lista.size()];
     	for(int i = 0; i < array.length; i++){
@@ -71,22 +89,15 @@ public class LlaveCifrado {
 		return array;
     }
 
+    /**
+     * Método que recupera la llave de cifrado utilizando el archivo de evaluaciones y 
+     * evaluando el polinomio construido con la interpolación de Lagrange en cero.
+     * @param archivoE nombre del archivo de evaluaciones.
+     * @return arreglo de bytes que representan a la llave de cifrado.
+     */
     public static byte[] getLlave(String archivoE) {
     	Vector[] array = vectorEvaluaciones(archivoE);
     	return Lagrange.lagrangeInterpolacion(new BigInteger("0"),array).toByteArray();
     }
-
-	public static void main(String[] args) {
-		char[] contraseña = LlaveCifrado.obtenerContraseña(); 
-		BigInteger k = new BigInteger(LlaveCifrado.hashContraseña(contraseña));
-		System.out.println(k.mod(primo));
-		PolinomioShamir poli = new PolinomioShamir(2,k);
-		poli.archivoEvaluaciones(5,"evals");
-		
-		k = new BigInteger(getLlave("evals.frg"));
-		System.out.println(k.mod(primo));
-		
-	}
-
 	
 }

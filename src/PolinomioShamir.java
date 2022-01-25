@@ -3,7 +3,10 @@ import java.util.Random;
 import java.util.Vector;
 import java.io.*;
 
-
+/**
+ * Clase que permite construir un polinomio dada una llave y el grado del polinomio.
+ * Los coeficientes se guradan en un arreglo y se construyen aleatoriamente.
+ */
 public class PolinomioShamir {
 	private BigInteger[] coeficientes;
 	private int grado;
@@ -69,6 +72,11 @@ public class PolinomioShamir {
 		return lista;
 	}
 
+	/**
+	 * Método que escribe n evaluaciones en un archivo con extensión .frg.
+	 * @param n número de evaluaciones.
+	 * @param archivoE nombre del archivo donde se guardarán las evaluaciones.
+	 */
 	public void archivoEvaluaciones(int n, String archivoE) {
 		String evaluaciones = this.evaluarNValores(n);
 		Writer wr;
