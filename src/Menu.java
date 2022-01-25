@@ -27,10 +27,10 @@ public class Menu{
             }**/
     public static void main(String args[]) throws IOException {
         if (args[0].equals("c")) {
-            CifradoShamir c= new CifradoShamir(args[1],args[2]+".txt");
-            c.cifrarTexto(args[3],args[4]);
+            CifradoShamir c= new CifradoShamir(args[1],args[4]+".txt");
+            c.cifrarTexto(args[2],args[3]);
         } else if (args[0].equals("d")) {
-            CifradoShamir ci = new CifradoShamir(args[2]+".frg",args[1]+ ".aes");
+            CifradoShamir ci = new CifradoShamir(args[1]+".frg",args[4]+ ".aes");
             ci.decifrarTexto();
         }
         else {
