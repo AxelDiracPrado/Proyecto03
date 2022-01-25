@@ -1,6 +1,6 @@
-import java.util.Scanner;
+import java.util.*;
 public class Menu{
-    public static void main(String[] args) {
+    /** public static void main(String[] args) {
         CifradoShamir c= new CifradoShamir("evals","claro.txt");
         Scanner sc = new Scanner(System.in);
         int particiones,minimo,temp=1;
@@ -24,5 +24,17 @@ public class Menu{
             sc.nextLine();
         }
             }
+            }**/
+    public static void main(String args[]) throws IOException {
+        if (args[0].equals("c")) {
+            CifradoShamir c= new CifradoShamir(args[1],args[2]+".txt");
+            c.cifrarTexto(args[3],args[4]);
+        } else if (args[0].equals("d")) {
+            CifradoShamir ci = new CifradoShamir(args[2]+".frg",args[1]+ ".aes");
+            ci.decifrarTexto();
+        }
+        else {
+            System.out.println("Opción equivocada.");
+        }
     }
 }
