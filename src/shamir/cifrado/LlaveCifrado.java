@@ -1,3 +1,6 @@
+package shamir.cifrado;
+
+import shamir.utilidades.*;
 import java.io.*;
 import java.security.MessageDigest;
 import java.util.*;

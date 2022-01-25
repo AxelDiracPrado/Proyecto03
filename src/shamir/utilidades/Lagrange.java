@@ -1,3 +1,5 @@
+package shamir.utilidades;
+
 import java.math.BigInteger;
 import java.util.*;
 

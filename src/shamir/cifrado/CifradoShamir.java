@@ -1,3 +1,6 @@
+package shamir.cifrado;
+
+import shamir.utilidades.*;
 import java.io.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
@@ -40,7 +43,7 @@ public class CifradoShamir {
 
 		try {
 			Cipher cipher = Cipher.getInstance("AES");
-			FileOutputStream textoCifrado = new FileOutputStream(archivo,true);
+			FileOutputStream textoCifrado = new FileOutputStream(archivo,false);
 			SecretKeySpec kSec = new SecretKeySpec(k,"AES");
 			cipher.init(Cipher.ENCRYPT_MODE,kSec);
 			CipherInputStream cipherInput = new CipherInputStream(new FileInputStream(this.nombreArchivoTexto),cipher);
@@ -71,7 +74,7 @@ public class CifradoShamir {
 		String archivo = this.archivoTexto();
 		try {
 			Cipher cipher = Cipher.getInstance("AES");
-			FileOutputStream textoDecifrado = new FileOutputStream(archivo,true);
+			FileOutputStream textoDecifrado = new FileOutputStream(archivo,false);
 			SecretKeySpec kSec = new SecretKeySpec(k,"AES");
 			cipher.init(Cipher.DECRYPT_MODE,kSec);
 			CipherInputStream cipherInput = new CipherInputStream(new FileInputStream(this.nombreArchivoTexto),cipher);

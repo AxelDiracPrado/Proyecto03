@@ -1,3 +1,5 @@
+package shamir.utilidades;
+
 import java.math.BigInteger;
 import java.util.Random;
 import java.util.Vector;
@@ -81,13 +83,25 @@ public class PolinomioShamir {
 		String evaluaciones = this.evaluarNValores(n);
 		Writer wr;
 		try {
-			wr = new FileWriter(archivoE + ".frg", false);
+			String archivo = archivoEvals(archivoE);
+			wr = new FileWriter(archivo, false);
 			wr.write(evaluaciones);
 			wr.close();
-			System.out.println("Las evaluaciones se guardaron en: " + archivoE + ".frg");
+			System.out.println("Las evaluaciones se guardaron en: " + archivo);
 		} catch(Exception e) {
 			System.err.println(e);
 	    	System.exit(1);
 		}
+	}
+
+	public static String archivoEvals(String archivoE) {
+		String archivo;
+		if(archivoE.lastIndexOf('.') == -1){
+			archivo = archivoE + ".frg";
+		}
+	    else {
+	    	archivo = archivoE.substring(0,archivoE.lastIndexOf('.'))+".frg";
+	    }
+	    return archivo;
 	}
 }
