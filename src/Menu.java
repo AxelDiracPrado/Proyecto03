@@ -1,4 +1,5 @@
 import java.util.*;
+import 	java.io.*;
 public class Menu{
     /** public static void main(String[] args) {
         CifradoShamir c= new CifradoShamir("evals","claro.txt");
@@ -28,9 +29,9 @@ public class Menu{
     public static void main(String args[]) throws IOException {
         if (args[0].equals("c")) {
             CifradoShamir c= new CifradoShamir(args[1],args[4]+".txt");
-            c.cifrarTexto(args[2],args[3]);
+            c.cifrarTexto(Integer.parseInt(args[2]),Integer.parseInt(args[3]));
         } else if (args[0].equals("d")) {
-            CifradoShamir ci = new CifradoShamir(args[1]+".frg",args[4]+ ".aes");
+            CifradoShamir ci = new CifradoShamir(args[1]+".frg",args[2]+ ".aes");
             ci.decifrarTexto();
         }
         else {

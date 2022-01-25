@@ -94,9 +94,4 @@ public class CifradoShamir {
 		this.decifradoAES(k);
 	}
 
-	public static void main(String[] args) {
-		CifradoShamir c = new CifradoShamir("evals", "claro.txt");
-		c.cifrarTexto();
-	}
-
 }
