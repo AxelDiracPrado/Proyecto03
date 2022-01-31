@@ -13,7 +13,9 @@ public class Main{
         if (args[0].equals("c")) {
             if (args.length == 5) {
                 CifradoShamir c= new CifradoShamir(args[1],args[4]);
+                if(Integer.parseInt(args[2])>2)
                 c.cifrarTexto(Integer.parseInt(args[2]),Integer.parseInt(args[3]));
+                else    System.out.println("Número pequeño de particiones.");
             } else {
                 System.out.println("Número incorrecto de argumentos.");
             }
