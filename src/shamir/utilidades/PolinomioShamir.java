@@ -19,8 +19,9 @@ public class PolinomioShamir {
 	 * @param grado grado del polinomio.
 	 * @param llave de cifrado.
 	 */
-	public PolinomioShamir(int grado, BigInteger llave) {
-		BigInteger k = llave.mod(primo);
+	public PolinomioShamir(int grado, String llave) {
+		BigInteger k = new BigInteger(llave,16);
+		k = k.mod(primo); 
 		this.coeficientes = new BigInteger[grado + 1];
 		this.grado = grado;
 		this.coeficientes[0] = k;

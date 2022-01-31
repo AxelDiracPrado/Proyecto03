@@ -34,13 +34,14 @@ public class LlaveCifrado {
 	 * @param password la contraseña del usuario.
 	 * @return cadena de bytes que representan la llave de cifrado.
 	 */
-	public static byte[] hashContraseña(char[] password) {
-		byte[] hashContraseña = null;
+	public static String hashContraseña(char[] password) {
+		String hashContraseña = null;
 		MessageDigest md;
 		try {
 			md = MessageDigest.getInstance("SHA-256");
 			String passwordStr = new String(password);
-			hashContraseña = md.digest(passwordStr.getBytes());
+			md.update(passwordStr.getBytes());
+			hashContraseña = bytesToHex(md.digest());
 			Arrays.fill(password, ' ');
 		} catch(Exception e) {
 			System.err.println(e);
@@ -103,4 +104,16 @@ public class LlaveCifrado {
     	return Lagrange.lagrangeInterpolacion(new BigInteger("0"),array).toByteArray();
     }
 	
+
+	 /** 
+    *Metodo qe convierte un arreglo de bytes a cadena.
+    *@param bytes -- arreglo de bytes.
+    *@return String con el texto.
+    */
+    private static String bytesToHex(byte[] bytes) {
+        StringBuffer result = new StringBuffer();
+        for (byte b : bytes) result.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+            return result.toString();
+    }
+
 }

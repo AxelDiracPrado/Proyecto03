@@ -44,7 +44,7 @@ public class CifradoShamir {
 		try {
 			Cipher cipher = Cipher.getInstance("AES");
 			FileOutputStream textoCifrado = new FileOutputStream(archivo,false);
-			SecretKeySpec kSec = new SecretKeySpec(k,"AES");
+			SecretKeySpec kSec = new SecretKeySpec(k,0,16,"AES");
 			cipher.init(Cipher.ENCRYPT_MODE,kSec);
 			CipherInputStream cipherInput = new CipherInputStream(new FileInputStream(this.nombreArchivoTexto),cipher);
 			int escribir = cipherInput.read();
@@ -63,10 +63,10 @@ public class CifradoShamir {
 
 	public void cifrarTexto(int n, int t) {
 		char[] contraseña = LlaveCifrado.obtenerContraseña(); 
-		BigInteger k = new BigInteger(LlaveCifrado.hashContraseña(contraseña));
+		String k = LlaveCifrado.hashContraseña(contraseña);
 		PolinomioShamir polinomio = new PolinomioShamir(t-1,k);
 		polinomio.archivoEvaluaciones(n,this.nombreArchivoEvals);
-		this.cifradoAES(k);
+		this.cifradoAES(new BigInteger(k,16).abs());
 	}
 
 	public void decifradoAES(BigInteger llave) {
@@ -75,7 +75,7 @@ public class CifradoShamir {
 		try {
 			Cipher cipher = Cipher.getInstance("AES");
 			FileOutputStream textoDecifrado = new FileOutputStream(archivo,false);
-			SecretKeySpec kSec = new SecretKeySpec(k,"AES");
+			SecretKeySpec kSec = new SecretKeySpec(k,0,16,"AES");
 			cipher.init(Cipher.DECRYPT_MODE,kSec);
 			CipherInputStream cipherInput = new CipherInputStream(new FileInputStream(this.nombreArchivoTexto),cipher);
 			int escribir = cipherInput.read();
